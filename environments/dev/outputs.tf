@@ -17,3 +17,7 @@ output "demo_role_arn" {
 output "demo_bucket_id" {
   value = module.storage_demo.bucket_id
 }
+
+output "demo_service_name" {
+  value = module.compute_demo.service_name
+}

@@ -43,3 +43,25 @@ module "storage_demo" {
   environment    = "dev"
   bucket_purpose = "demo"
 }
+
+module "compute_demo" {
+  source = "../../modules/compute-ecs"
+
+  project      = var.project
+  environment  = "dev"
+  owner_team   = var.owner_team
+  service_name = "demo-web"
+
+  vpc_id     = module.networking.vpc_id
+  subnet_ids = module.networking.private_subnet_ids
+
+  container_image = "public.ecr.aws/nginx/nginx:latest"
+  container_port  = 80
+  cpu             = 256
+  memory          = 512
+  desired_count   = 1
+
+  task_role_arn = module.iam_ecs_task_demo.role_arn
+
+  ingress_cidr_blocks = [module.networking.vpc_cidr]
+}
