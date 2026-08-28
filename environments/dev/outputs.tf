@@ -21,3 +21,19 @@ output "demo_bucket_id" {
 output "demo_service_name" {
   value = module.compute_demo.service_name
 }
+
+output "demo_db_endpoint" {
+  value = module.database_demo.db_endpoint
+}
+
+output "demo_db_secret_arn" {
+  value = module.database_demo.secret_arn
+}
+
+output "demo_glue_database" {
+  value = module.data_platform_demo.glue_database_name
+}
+
+output "demo_athena_workgroup" {
+  value = module.data_platform_demo.athena_workgroup_name
+}

@@ -65,3 +65,40 @@ module "compute_demo" {
 
   ingress_cidr_blocks = [module.networking.vpc_cidr]
 }
+
+module "database_demo" {
+  source = "../../modules/database-rds"
+
+  project     = var.project
+  environment = "dev"
+  owner_team  = var.owner_team
+  db_purpose  = "demo"
+
+  vpc_id             = module.networking.vpc_id
+  private_subnet_ids = module.networking.private_subnet_ids
+
+  allowed_security_group_ids = [module.compute_demo.security_group_id]
+
+  engine         = "postgres"
+  engine_version = "16.4"
+  instance_class = "db.t3.micro"
+  multi_az       = false # dev: keep cost down
+
+  skip_final_snapshot = true # dev: fast teardown, no orphaned snapshot cost
+}
+
+module "data_platform_demo" {
+  source = "../../modules/data-platform"
+
+  project      = var.project
+  environment  = "dev"
+  owner_team   = var.owner_team
+  dataset_name = "demo"
+
+  source_bucket_name = module.storage_demo.bucket_id
+  source_bucket_arn  = module.storage_demo.bucket_arn
+  source_prefix      = "raw/"
+
+  enable_crawler   = true
+  crawler_schedule = null # on-demand only for dev -- no need to run on a schedule
+}
